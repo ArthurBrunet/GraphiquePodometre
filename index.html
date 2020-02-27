@@ -50,20 +50,20 @@
         var ArrayZ = [];
 
 
-        fetchJSONFile('4.json', function(data){
+        fetchJSONFile('7.json', function(data){
                 data.forEach(function(element){
                     console.log(element);
-                    ArrayPositionX.push(Number(element['positionX']['$numberDouble']));
-                    ArrayPositionY.push(Number(element['positionY']['$numberDouble']));
-                    ArrayPositionZ.push(Number(element['positionZ']['$numberDouble']));
+                    ArrayPositionX.push(Number(element['positionX']));
+                    ArrayPositionY.push(Number(element['positionY']));
+                    ArrayPositionZ.push(Number(element['positionZ']));
 
-                    ArrayAccX.push(Number(element['accX']['$numberDouble']));
-                    ArrayAccY.push(Number(element['accY']['$numberDouble']));
-                    ArrayAccZ.push(Number(element['accZ']['$numberDouble']));
+                    ArrayAccX.push(Number(element['accX']));
+                    ArrayAccY.push(Number(element['accY']));
+                    ArrayAccZ.push(Number(element['accZ']));
 
-                    ArrayX.push(Number(element['x']['$numberDouble']));
-                    ArrayY.push(Number(element['y']['$numberDouble']));
-                    ArrayZ.push(Number(element['z']['$numberDouble']));
+                    ArrayX.push(Number(element['x']));
+                    ArrayY.push(Number(element['y']));
+                    ArrayZ.push(Number(element['z']));
 
                     myChartPosition.data.labels.push(Number(1));
                     myChartAcc.data.labels.push(Number(1));
