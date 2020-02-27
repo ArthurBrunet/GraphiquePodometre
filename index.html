@@ -188,7 +188,7 @@
                 });
                 data.forEach(function (element) {
                         if (saisie === element['pseudo']) {
-
+                            console.log(data.length);
                             console.log("allo");
                             // console.log(pseudo.toString());
                             ArrayPositionX.push(Number(element['positionX']));
@@ -203,13 +203,12 @@
                             ArrayY.push(Number(element['y']));
                             ArrayZ.push(Number(element['z']));
 
-                                myChartPosition.data.labels.push(element['timestamp']);
-                                myChartAcc.data.labels.push(element['timestamp']);
-                                myChart.data.labels.push(element['timestamp']);
-                                myChartPosition.update();
-                                myChartAcc.update();
-                                myChart.update();
-
+                            myChartPosition.data.labels.push(element['timestamp']);
+                            myChartAcc.data.labels.push(element['timestamp']);
+                            myChart.data.labels.push(element['timestamp']);
+                            myChartPosition.update();
+                            myChartAcc.update();
+                            myChart.update();
 
                         } else {
                             console.log("le pseudo n'existe pas")
@@ -217,7 +216,7 @@
                     }
                 );
 
-            }
+            };
             request.send()
         })
     };
