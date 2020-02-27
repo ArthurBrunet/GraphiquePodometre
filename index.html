@@ -202,15 +202,13 @@
                             ArrayX.push(Number(element['x']));
                             ArrayY.push(Number(element['y']));
                             ArrayZ.push(Number(element['z']));
-                            if (data.length === 100)
-                            {
+
                                 myChartPosition.data.labels.push(element['timestamp']);
                                 myChartAcc.data.labels.push(element['timestamp']);
                                 myChart.data.labels.push(element['timestamp']);
                                 myChartPosition.update();
                                 myChartAcc.update();
                                 myChart.update();
-                            }
 
 
                         } else {
