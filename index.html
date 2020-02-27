@@ -13,6 +13,9 @@
 <canvas id="myChartAcc" width="400" height="400"></canvas>
 <canvas id="myChart" width="400" height="400"></canvas>
 
+<input type="text" id="test">
+<button onClick="displaygraph()">Envoi</button>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
@@ -22,179 +25,204 @@
         crossorigin="anonymous"></script>
 
 <script>
-    function fetchJSONFile(path, callback) {
-        var httpRequest = new XMLHttpRequest();
-        httpRequest.onreadystatechange = function() {
-            if (httpRequest.readyState === 4) {
-                if (httpRequest.status === 200) {
-                    var data = JSON.parse(httpRequest.responseText);
-                    if (callback) callback(data);
+    function displaygraph() {
+        function fetchJSONFile(path, callback) {
+            var httpRequest = new XMLHttpRequest();
+            httpRequest.onreadystatechange = function () {
+                if (httpRequest.readyState === 4) {
+                    if (httpRequest.status === 200) {
+                        var data = JSON.parse(httpRequest.responseText);
+                        if (callback) callback(data);
+                    }
                 }
+            };
+            httpRequest.open('GET', path);
+            httpRequest.send();
+        }
+
+        $(document).ready(function () {
+            var ArrayPositionX = [];
+            var ArrayPositionY = [];
+            var ArrayPositionZ = [];
+            var i = 0;
+            var ArrayAccX = [];
+            var ArrayAccY = [];
+            var ArrayAccZ = [];
+
+            var ArrayX = [];
+            var ArrayY = [];
+            var ArrayZ = [];
+            var saisie = document.getElementById('test').value;
+
+            var request = new XMLHttpRequest();
+
+            request.open("GET", "http://185.216.25.16:5000/datas/getsome/" + saisie);
+
+            request.onload = function () {
+
+                const data = JSON.parse(this.response);
+
+
+                var ctx = document.getElementById('myChartPosition').getContext('2d');
+                var myChartPosition = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mes labels'],
+                        datasets: [
+                            {
+                                label: 'X',
+                                pointBackgroundColor: 'rgb(29,44,160)',
+                                data: ArrayPositionX,
+                                fill: false,
+                                showLine: true,
+                            },
+                            {
+                                label: 'Y',
+                                pointBackgroundColor: 'rgb(194,36,47)',
+                                data: ArrayPositionY,
+                                fill: false,
+                                showLine: true,
+                            },
+                            {
+                                label: 'Z',
+                                pointBackgroundColor: 'rgb(39,194,68)',
+                                data: ArrayPositionZ,
+                                fill: false,
+                                showLine: true,
+                            }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: saisie
+                        },
+                        scales: {
+                            yAxes: [{
+                                stacked: false
+                            }]
+                        }
+                    }
+                });
+
+                var teseza = document.getElementById('myChart').getContext('2d');
+                var myChart = new Chart(teseza, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mes labels'],
+                        datasets: [
+                            {
+                                label: 'X',
+                                pointBackgroundColor: 'rgb(29,44,160)',
+                                data: ArrayX,
+                                fill: false,
+                                showLine: true,
+                            },
+                            {
+                                label: 'Y',
+                                pointBackgroundColor: 'rgb(194,36,47)',
+                                data: ArrayY,
+                                fill: false,
+                                showLine: true,
+                            },
+                            {
+                                label: 'Z',
+                                pointBackgroundColor: 'rgb(39,194,68)',
+                                data: ArrayZ,
+                                fill: false,
+                                showLine: true,
+                            }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: saisie
+                        },
+                        scales: {
+                            yAxes: [{
+                                stacked: false
+                            }]
+                        }
+                    }
+                });
+
+
+                var tes = document.getElementById('myChartAcc').getContext('2d');
+                var myChartAcc = new Chart(tes, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mes labels'],
+                        datasets: [
+                            {
+                                label: 'X',
+                                pointBackgroundColor: 'rgb(29,44,160)',
+                                data: ArrayAccX,
+                                fill: false,
+                                showLine: true,
+                            },
+                            {
+                                label: 'Y',
+                                pointBackgroundColor: 'rgb(194,36,47)',
+                                data: ArrayAccY,
+                                fill: false,
+                                showLine: true,
+                            },
+                            {
+                                label: 'Z',
+                                pointBackgroundColor: 'rgb(39,194,68)',
+                                data: ArrayAccZ,
+                                fill: false,
+                                showLine: true,
+                            }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: saisie
+                        },
+                        scales: {
+                            yAxes: [{
+                                stacked: false
+                            }]
+                        }
+                    }
+                });
+                data.forEach(function (element) {
+                        if (saisie === element['pseudo']) {
+
+                            console.log("allo");
+                            // console.log(pseudo.toString());
+                            ArrayPositionX.push(Number(element['positionX']));
+                            ArrayPositionY.push(Number(element['positionY']));
+                            ArrayPositionZ.push(Number(element['positionZ']));
+
+                            ArrayAccX.push(Number(element['accX']));
+                            ArrayAccY.push(Number(element['accY']));
+                            ArrayAccZ.push(Number(element['accZ']));
+
+                            ArrayX.push(Number(element['x']));
+                            ArrayY.push(Number(element['y']));
+                            ArrayZ.push(Number(element['z']));
+                            if (data.length === 100)
+                            {
+                                myChartPosition.data.labels.push(element['timestamp']);
+                                myChartAcc.data.labels.push(element['timestamp']);
+                                myChart.data.labels.push(element['timestamp']);
+                                myChartPosition.update();
+                                myChartAcc.update();
+                                myChart.update();
+                            }
+
+
+                        } else {
+                            console.log("le pseudo n'existe pas")
+                        }
+                    }
+                );
+
             }
-        };
-        httpRequest.open('GET', path);
-        httpRequest.send();
-    }
-
-    $(document).ready(function () {
-        var ArrayPositionX = [];
-        var ArrayPositionY = [];
-        var ArrayPositionZ = [];
-
-        var ArrayAccX = [];
-        var ArrayAccY = [];
-        var ArrayAccZ = [];
-
-        var ArrayX = [];
-        var ArrayY = [];
-        var ArrayZ = [];
-
-
-        fetchJSONFile('4.json', function(data){
-                data.forEach(function(element){
-                    console.log(element);
-                    ArrayPositionX.push(Number(element['positionX']['$numberDouble']));
-                    ArrayPositionY.push(Number(element['positionY']['$numberDouble']));
-                    ArrayPositionZ.push(Number(element['positionZ']['$numberDouble']));
-
-                    ArrayAccX.push(Number(element['accX']['$numberDouble']));
-                    ArrayAccY.push(Number(element['accY']['$numberDouble']));
-                    ArrayAccZ.push(Number(element['accZ']['$numberDouble']));
-
-                    ArrayX.push(Number(element['x']['$numberDouble']));
-                    ArrayY.push(Number(element['y']['$numberDouble']));
-                    ArrayZ.push(Number(element['z']['$numberDouble']));
-
-                    myChartPosition.data.labels.push(Number(1));
-                    myChartAcc.data.labels.push(Number(1));
-                    myChart.data.labels.push(Number(1));
-                    myChartPosition.update();
-                    myChartAcc.update();
-                    myChart.update();
-                }
-            );
-        });
-
-
-
-
-
-
-        var ctx = document.getElementById('myChartPosition').getContext('2d');
-        var myChartPosition = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Mes labels'],
-                datasets: [
-                    {
-                        label: 'X',
-                        pointBackgroundColor: 'rgb(29,44,160)',
-                        data: ArrayPositionX,
-                        fill: false,
-                        showLine: true,
-                    },
-                    {
-                        label: 'Y',
-                        pointBackgroundColor: 'rgb(194,36,47)',
-                        data: ArrayPositionY,
-                        fill: false,
-                        showLine: true,
-                    },
-                    {
-                        label: 'Z',
-                        pointBackgroundColor: 'rgb(39,194,68)',
-                        data: ArrayPositionZ,
-                        fill: false,
-                        showLine: true,
-                    }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        stacked: false
-                    }]
-                }
-            }
-        });
-
-        var teseza = document.getElementById('myChart').getContext('2d');
-        var myChart = new Chart(teseza, {
-            type: 'line',
-            data: {
-                labels: ['Mes labels'],
-                datasets: [
-                    {
-                        label: 'X',
-                        pointBackgroundColor: 'rgb(29,44,160)',
-                        data: ArrayX,
-                        fill: false,
-                        showLine: true,
-                    },
-                    {
-                        label: 'Y',
-                        pointBackgroundColor: 'rgb(194,36,47)',
-                        data: ArrayY,
-                        fill: false,
-                        showLine: true,
-                    },
-                    {
-                        label: 'Z',
-                        pointBackgroundColor: 'rgb(39,194,68)',
-                        data: ArrayZ,
-                        fill: false,
-                        showLine: true,
-                    }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        stacked: false
-                    }]
-                }
-            }
-        });
-
-
-        var tes = document.getElementById('myChartAcc').getContext('2d');
-        var myChartAcc = new Chart(tes, {
-            type: 'line',
-            data: {
-                labels: ['Mes labels'],
-                datasets: [
-                    {
-                        label: 'X',
-                        pointBackgroundColor: 'rgb(29,44,160)',
-                        data: ArrayAccX,
-                        fill: false,
-                        showLine: true,
-                    },
-                    {
-                        label: 'Y',
-                        pointBackgroundColor: 'rgb(194,36,47)',
-                        data: ArrayAccY,
-                        fill: false,
-                        showLine: true,
-                    },
-                    {
-                        label: 'Z',
-                        pointBackgroundColor: 'rgb(39,194,68)',
-                        data: ArrayAccZ,
-                        fill: false,
-                        showLine: true,
-                    }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        stacked: false
-                    }]
-                }
-            }
-        });
-
-
-
-    });
+            request.send()
+        })
+    };
 
 </script>
 
